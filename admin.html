@@ -130,7 +130,35 @@
 </head>
 
 <body>
+<div id="login-section" class="card">
+  <h2>🔐 تسجيل دخول المدير</h2>
 
+  <form id="login-form">
+
+    <label for="login-email">البريد الإلكتروني</label>
+    <input
+      type="email"
+      id="login-email"
+      placeholder="البريد الإلكتروني"
+      required
+    >
+
+    <label for="login-password">كلمة المرور</label>
+    <input
+      type="password"
+      id="login-password"
+      placeholder="كلمة المرور"
+      required
+    >
+
+    <button type="submit">
+      تسجيل الدخول
+    </button>
+
+    <div id="login-status" class="status"></div>
+
+  </form>
+</div>
 <header>
   <div>
     <h1>🔵🔴 لوحة تحكم برشلونة نيوز</h1>
