@@ -1,1 +1,240 @@
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>برشلونة نيوز | أخبار برشلونة</title>
+
+  <meta name="description" content="آخر أخبار برشلونة، الانتقالات، المباريات والإصابات">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Tahoma, sans-serif;
+      background: #f4f5f7;
+      color: #111;
+    }
+
+    header {
+      background: linear-gradient(135deg, #071952, #8b0015);
+      color: white;
+      padding: 18px 20px;
+    }
+
+    .header-content {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: bold;
+    }
+
+    .logo span {
+      color: #f5c400;
+    }
+
+    nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+
+    nav a:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .breaking {
+      background: #d90429;
+      color: white;
+      padding: 10px 15px;
+      font-weight: bold;
+    }
+
+    .breaking-inner {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 25px auto;
+      padding: 0 15px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .section-title h1 {
+      font-size: 24px;
+    }
+
+    .section-title span {
+      color: #8b0015;
+      font-weight: bold;
+    }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .news-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+      transition: transform 0.2s;
+    }
+
+    .news-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .news-image {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+      background: #ddd;
+    }
+
+    .news-content {
+      padding: 15px;
+    }
+
+    .category {
+      display: inline-block;
+      color: #8b0015;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .news-title {
+      font-size: 18px;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    .news-date {
+      color: #777;
+      font-size: 13px;
+    }
+
+    .empty {
+      grid-column: 1 / -1;
+      background: white;
+      padding: 50px 20px;
+      text-align: center;
+      border-radius: 12px;
+      color: #777;
+    }
+
+    footer {
+      margin-top: 50px;
+      background: #071952;
+      color: white;
+      text-align: center;
+      padding: 25px 15px;
+    }
+
+    @media (max-width: 800px) {
+      .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .header-content {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 550px) {
+      .news-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .news-image {
+        height: 210px;
+      }
+
+      .logo {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-content">
+
+    <div class="logo">
+      🔵🔴 برشلونة <span>نيوز</span>
+    </div>
+
+    <nav>
+      <a href="index.html">الرئيسية</a>
+      <a href="#transfers">الانتقالات</a>
+      <a href="#matches">المباريات</a>
+      <a href="#injuries">الإصابات</a>
+    </nav>
+
+  </div>
+</header>
+
+<div class="breaking">
+  <div class="breaking-inner">
+    🔴 عاجل | آخر أخبار نادي برشلونة أولًا بأول
+  </div>
+</div>
+
+<main>
+
+  <div class="section-title">
+    <h1>📰 آخر الأخبار</h1>
+    <span>FC BARCELONA</span>
+  </div>
+
+  <div id="news-container" class="news-grid">
+
+    <div class="empty">
+      <h2>لا توجد أخبار حاليًا</h2>
+      <p>ستظهر الأخبار هنا تلقائيًا بعد ربط الموقع بقاعدة البيانات.</p>
+    </div>
+
+  </div>
+
+</main>
+
+<footer>
+  <p>🔵🔴 برشلونة نيوز</p>
+  <p>جميع أخبار برشلونة في مكان واحد</p>
+</footer>
+
+</body>
+</html>
