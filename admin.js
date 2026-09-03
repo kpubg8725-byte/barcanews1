@@ -286,14 +286,16 @@ document.addEventListener(
 
             loadNews();
 
-          } catch (error) {
+} catch (error) {
 
-            console.error(error);
+  console.error(error);
 
-            status.textContent =
-              "❌ البريد الإلكتروني أو كلمة المرور غير صحيحة";
+  status.style.display = "block";
 
-          }
+  status.textContent =
+    "❌ " + error.message;
+
+}
 
         }
       );
