@@ -1,43 +1,102 @@
-const SUPABASE_URL = "https://wynectpjjflfeubcrten.supabase.co";
+     const SUPABASE_URL = "https://wynectpjjflfeubcrten.supabase.co";
 
-const SUPABASE_ANON_KEY = "sb_publishable_vHZMS6tJ7bVf48cpuT6AYA_uA30u1CY";
+const SUPABASE_ANON_KEY = "ضع_مفتاحك_العام_هنا";
 
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+
+// =============================
+// إظهار لوحة التحكم
+// =============================
+
+function showDashboard() {
+
+  const loginSection = document.getElementById("login-section");
+  const dashboard = document.getElementById("dashboard");
+
+  if (loginSection) {
+    loginSection.style.display = "none";
+  }
+
+  if (dashboard) {
+    dashboard.style.display = "block";
+  }
+}
+
+
+// =============================
+// إظهار تسجيل الدخول
+// =============================
+
+function showLogin() {
+
+  const loginSection = document.getElementById("login-section");
+  const dashboard = document.getElementById("dashboard");
+
+  if (loginSection) {
+    loginSection.style.display = "block";
+  }
+
+  if (dashboard) {
+    dashboard.style.display = "none";
+  }
+}
+
+
+// =============================
+// تسجيل الدخول
+// =============================
+
+async function login(email, password) {
+
+  const { data, error } =
+    await supabaseClient.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+
+// =============================
+// إضافة خبر
+// =============================
 
 async function addNews(title, content, category, image_url) {
 
-  const response = await fetch(
-    `${SUPABASE_URL}/rest/v1/news`,
-    {
-      method: "POST",
+  const { data, error } =
+    await supabaseClient
+      .from("news")
+      .insert([
+        {
+          title: title,
+          content: content,
+          category: category,
+          image_url: image_url || null
+        }
+      ])
+      .select();
 
-      headers: {
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-        "Content-Type": "application/json",
-        Prefer: "return=representation"
-      },
-
-      body: JSON.stringify({
-        title: title,
-        content: content,
-        category: category,
-        image_url: image_url || null
-      })
-    }
-  );
-
-  if (!response.ok) {
-
-    const error = await response.text();
-
+  if (error) {
     console.error(error);
-
-    throw new Error(error);
+    throw error;
   }
 
-  return await response.json();
+  return data;
 }
 
+
+// =============================
+// تحميل الأخبار
+// =============================
 
 async function loadNews() {
 
@@ -47,23 +106,19 @@ async function loadNews() {
 
   try {
 
-    const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/news?select=*&order=created_at.desc`,
-      {
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`
-        }
-      }
-    );
+    const { data: news, error } =
+      await supabaseClient
+        .from("news")
+        .select("*")
+        .order("created_at", {
+          ascending: false
+        });
 
-    if (!response.ok) {
-      throw new Error("تعذر تحميل الأخبار");
+    if (error) {
+      throw error;
     }
 
-    const news = await response.json();
-
-    if (!news.length) {
+    if (!news || !news.length) {
 
       list.innerHTML = `
         <p>لا توجد أخبار منشورة حتى الآن.</p>
@@ -73,9 +128,12 @@ async function loadNews() {
     }
 
     list.innerHTML = news.map(article => `
+
       <div class="news-item">
 
-        <h3>${escapeHTML(article.title)}</h3>
+        <h3>
+          ${escapeHTML(article.title)}
+        </h3>
 
         <p>
           ${escapeHTML(article.category || "")}
@@ -86,6 +144,7 @@ async function loadNews() {
         </small>
 
       </div>
+
     `).join("");
 
   } catch (error) {
@@ -99,17 +158,45 @@ async function loadNews() {
 }
 
 
+// =============================
+// تسجيل الخروج
+// =============================
+
+async function logout() {
+
+  const { error } =
+    await supabaseClient.auth.signOut();
+
+  if (error) {
+    console.error(error);
+  }
+
+  showLogin();
+}
+
+
+// =============================
+// التاريخ
+// =============================
+
 function formatDate(date) {
 
   if (!date) return "";
 
-  return new Date(date).toLocaleDateString("ar-IQ", {
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-  });
+  return new Date(date).toLocaleDateString(
+    "ar-IQ",
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    }
+  );
 }
 
+
+// =============================
+// حماية HTML
+// =============================
 
 function escapeHTML(text) {
 
@@ -124,63 +211,172 @@ function escapeHTML(text) {
 }
 
 
-document.addEventListener("DOMContentLoaded", () => {
+// =============================
+// تشغيل الصفحة
+// =============================
 
-  const form = document.getElementById("news-form");
+document.addEventListener(
+  "DOMContentLoaded",
+  async () => {
 
-  if (form) {
+    const {
+      data: { session }
+    } = await supabaseClient.auth.getSession();
 
-    form.addEventListener("submit", async (event) => {
 
-      event.preventDefault();
+    // إذا كان المدير مسجل الدخول
+    if (session) {
 
-      const title =
-        document.getElementById("title").value.trim();
+      showDashboard();
 
-      const content =
-        document.getElementById("content").value.trim();
+      loadNews();
 
-      const category =
-        document.getElementById("category").value;
+    } else {
 
-      const image =
-        document.getElementById("image").value.trim();
+      showLogin();
 
-      const status =
-        document.getElementById("status");
+    }
 
-      try {
 
-        status.style.display = "block";
+    // =========================
+    // نموذج تسجيل الدخول
+    // =========================
 
-        status.textContent = "جاري نشر الخبر...";
+    const loginForm =
+      document.getElementById("login-form");
 
-        await addNews(
-          title,
-          content,
-          category,
-          image
-        );
+    if (loginForm) {
 
-        status.textContent =
-          "✅ تم نشر الخبر بنجاح";
+      loginForm.addEventListener(
+        "submit",
+        async (event) => {
 
-        form.reset();
+          event.preventDefault();
 
-        loadNews();
+          const email =
+            document
+              .getElementById("login-email")
+              .value
+              .trim();
 
-      } catch (error) {
+          const password =
+            document
+              .getElementById("login-password")
+              .value;
 
-        console.error(error);
+          const status =
+            document.getElementById("login-status");
 
-        status.textContent =
-          "❌ حدث خطأ أثناء نشر الخبر";
-      }
+          try {
 
-    });
+            status.style.display = "block";
 
-  }
+            status.textContent =
+              "جاري تسجيل الدخول...";
 
-  loadNews();
+            await login(
+              email,
+              password
+            );
 
-});
+            status.textContent =
+              "✅ تم تسجيل الدخول";
+
+            showDashboard();
+
+            loadNews();
+
+          } catch (error) {
+
+            console.error(error);
+
+            status.textContent =
+              "❌ البريد الإلكتروني أو كلمة المرور غير صحيحة";
+
+          }
+
+        }
+      );
+
+    }
+
+
+    // =========================
+    // نموذج إضافة الخبر
+    // =========================
+
+    const newsForm =
+      document.getElementById("news-form");
+
+    if (newsForm) {
+
+      newsForm.addEventListener(
+        "submit",
+        async (event) => {
+
+          event.preventDefault();
+
+          const title =
+            document
+              .getElementById("title")
+              .value
+              .trim();
+
+          const content =
+            document
+              .getElementById("content")
+              .value
+              .trim();
+
+          const category =
+            document
+              .getElementById("category")
+              .value;
+
+          const image =
+            document
+              .getElementById("image")
+              .value
+              .trim();
+
+          const status =
+            document.getElementById("status");
+
+          try {
+
+            status.style.display = "block";
+
+            status.textContent =
+              "جاري نشر الخبر...";
+
+            await addNews(
+              title,
+              content,
+              category,
+              image
+            );
+
+            status.textContent =
+              "✅ تم نشر الخبر بنجاح";
+
+            newsForm.reset();
+
+            loadNews();
+
+          } catch (error) {
+
+            console.error(error);
+
+            status.textContent =
+              "❌ تعذر نشر الخبر. سنتحقق من صلاحيات قاعدة البيانات في الخطوة التالية.";
+
+          }
+
+        }
+      );
+
+    }
+
+
+    // =========================
+    
