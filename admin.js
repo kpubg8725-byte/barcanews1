@@ -1,4 +1,3 @@
-alert("admin.js يعمل");
 const SUPABASE_URL = "https://wynectpjjflfeubcrten.supabase.co";
 
 const SUPABASE_ANON_KEY = "sb_publishable_vHZMS6tJ7bVf48cpuT6AYA_uA30u1CY";
